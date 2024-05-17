@@ -1,8 +1,8 @@
-# from django.contrib import admin
-# from django.urls import path, include
+from django.contrib import admin
+from django.urls import path, include
 
 # Register your models here.
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('', include('celebritypicker_app.urls')),
-# ]
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('celebritypicker_app.urls')),
+]

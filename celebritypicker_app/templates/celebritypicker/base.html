@@ -1,12 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title></title>
-  <link rel="stylesheet" href="https://cdn.tailwindcss.com" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>The Celebrity Picker</title>
+  <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body>
   <header class="navbar-fixed">
@@ -16,7 +26,16 @@
           <li><a href="/" class="left brand-logo">&nbsp;&nbsp;</a></li>
         </ul>
         <ul class="right">
-          <li><a href="/about">About</a></li>
+          <li><a href="/celebritypicker/about">About</a></li>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <input type="submit" class="btn" value="Log Out"/>
+          </form>
+        </li>
+      {% else %}
+        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+        <li><a href="{% url 'login' %}">Log In</a></li>
+      {% endif %}
         </ul>
       </div>
     </nav>
