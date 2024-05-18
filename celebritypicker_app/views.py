@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django. contrib.auth.forms import UserCreationForm
-from .tmdb_utils import get_celebrity_details
+from .tmdb_utils import get_popular_movies, get_celebrity_details
 from django.http import JsonResponse
-
 # Create your views here.
 def home(request):
-    return render(request, 'celebritypicker/home.html')
+    popular_movies = get_popular_movies()
+    return render(request, 'celebritypicker/home.html', {'popular_movies': popular_movies})
 
 def about(request):
     return render(request, 'celebritypicker/about.html')
