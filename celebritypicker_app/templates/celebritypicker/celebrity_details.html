@@ -2,22 +2,25 @@
 {% block content %}
 
 <div class="max-w-4xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-center mb-4">{{ celebrity.name }}</h1>
-    <hr class="border-gray-300">
-    <div class="flex flex-col md:flex-row items-center">
-        <div class="md:w-1/3 md:mr-4">
-            <img src="{{ celebrity.image.url }}" alt="{{ celebrity.name }}" class="rounded-lg w-full h-auto">
-        </div>
-        <div class="md:w-2/3">
-            <p class="text-gray-700 text-lg mt-4">{{ celebrity.description }}</p>
-            <p class="text-gray-700 text-lg mt-4">Born on {{ celebrity.birthday }}</p>
-            <p class="text-gray-700 text-lg mt-4">Movies and shows:</p>
-            <ul class="list-disc ml-6">
-                {% for movie in celebrity.movies.all %}
-                    <li>{{ movie.title }}</li>
-                {% endfor %}
-            </ul>
+    <h1 class="text-2xl font-bold mb-4">{{ celeb_details.name }}</h1>
+    <div class="flex flex-col md:flex-row md:gap-4">
+        <img src="https://image.tmdb.org/t/p/w300{{ celeb_details.profile_path }}" alt="{{ celeb_details.name }}" class="mb-4 md:mb-0">
+        <div>
+            <p><strong>Birthday:</strong> {{ celeb_details.birthday }}</p>
+            <p><strong>Place of Birth:</strong> {{ celeb_details.place_of_birth }}</p>
+            <p><strong>Biography:</strong> {{ celeb_details.biography }}</p>
         </div>
     </div>
+    <h2 class="text-xl font-semibold mt-6">Known For</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        {% for movie in celeb_details.known_for %}
+            <div class="p-4 shadow rounded-lg bg-white">
+                <h3 class="font-semibold">{{ movie.title }}</h3>
+                <p>Release Date: {{ movie.release_date }}</p>
+                <p>{{ movie.overview }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

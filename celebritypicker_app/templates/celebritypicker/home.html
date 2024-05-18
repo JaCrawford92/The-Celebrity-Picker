@@ -1,6 +1,6 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6">
+<div class="max-w-6xl mx-auto px-4 py-6 dark">
     <h1 class="text-3xl font-bold text-center mb-4">Celebrity Cinema Picker</h1>
     <p class="text-center text-lg text-gray-600 mb-6">
         Discover popular movies featuring your favorite celebrities.
@@ -9,8 +9,10 @@
         {% for movie in popular_movies.results %}
             <div class="p-4 shadow rounded-lg bg-white">
                 <h3 class="font-semibold">{{ movie.title }}</h3>
+                <p>Actor: {{ movie.actor }}</p>
                 <p>Release Date: {{ movie.release_date }}</p>
                 <p>{{ movie.overview }}</p>
+                <a href="{% url 'celebrity_details' movie.id %}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>
