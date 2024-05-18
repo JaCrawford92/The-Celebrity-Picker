@@ -1,10 +1,15 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
-  darkMode: 'selector',
+  content: [
+    './templates/**/*.html',
+    './celebritypicker_app/templates/**/*.html',
+    './myapp/**/*.js',
+  ],
   theme: {
     extend: {},
   },
-  plugins: [],
-}
+  plugins: [
+    require('@tailwindcss/container-queries'),
+  ],
+};
+
 

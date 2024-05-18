@@ -27,3 +27,4 @@ def get_celebrity_details(celeb_id):
         # Consider logging the error or handling it appropriately
         print(f"Error fetching details for celebrity ID {celeb_id}: {e}")
         return {}
+    
