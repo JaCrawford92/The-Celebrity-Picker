@@ -35,4 +35,9 @@ def signup(request):
 
 def celebrity_details(request, celeb_id):
     celeb_details = get_celebrity_details(celeb_id)
-    return JsonResponse(celeb_details)
+    base_img_url = 'https://image.tmdb.org/t/p/w500'
+    profile_img_url = f"{base_img_url}{celeb_details.get('profile_path')}" if celeb_details.get('profile_path') else None
+    return render(request, 'celebritypicker/celebrity_details.html', {
+       'celeb_details': celeb_details, 
+       'profile_img_url': profile_img_url
+       })
