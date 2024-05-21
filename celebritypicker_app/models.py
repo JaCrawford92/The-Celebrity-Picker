@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class UserActiviy(models.Model):
+class UserActivity(models.Model):
     date = models.DateField()
     movie = models.CharField(max_length=50)
     show = models.CharField() 

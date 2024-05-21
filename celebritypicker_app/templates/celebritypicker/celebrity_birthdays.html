@@ -1,0 +1,42 @@
+{% extends 'celebritypicker/base.html' %}
+{% block content %}
+
+<div>
+    <hi>Celebrities Born on {{ selectecd_date }}</hi>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as.p }}
+        <button type="submit" class="btn btn-primary">Find Celebrities</button>
+    </form>
+
+    {% if celebrities %}
+        {% for celeb in celebrities %}
+            <div>
+                <h2>{{ celeb.name }}</h2>
+                <p>Movies and Shows:</p>
+                <ul>
+                    {% for work in celeb.works %}
+                    <li>{{  work.title  }} ({{ work.year }})</li>
+                    {% endfor %}
+                </ul>
+                <button onclick="fetchRandomWorl({{ celeb.id }})" class="btn btn-primary">Pick a Random Work</button>
+                <div id="random_work_{{ celeb.id }}"></div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<script>
+    function fetchRandomWork(celebId) {
+        fetch('/random_movies_or_show/?celeb_id=${celebId}')
+        .then(response => response.json())
+        .then(data => {
+            const div = document.getELEMENTById('random-work-${celebId}');
+            if (data.error) {
+                div.innerHTML = `<p>${data.error}</p>`;
+            } else {
+                div.innerHTML = `<p>${data.title} (${data.overview})</p>`;
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -18,6 +18,7 @@
         </ul>
         <ul class="right">
           <li><a href="{% url 'about' %}">About</a></li>
+          <li><a href="{% url 'celebrity_birthdays' %}">Find Celebrities by Date</a></li>
           <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
             <input type="submit" class="btn" value="Log Out"/>

@@ -27,4 +27,17 @@ def get_celebrity_details(celeb_id):
         # Consider logging the error or handling it appropriately
         print(f"Error fetching details for celebrity ID {celeb_id}: {e}")
         return {}
-    
+
+def get_celebrities_by_date(date):
+    url = 'https://api.themoviedb.org/3/discover/movie'
+    params = {
+        'api_key': settings.TMDB_API_KEY
+    }
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        celebrities = response.json().get('results', [])
+        return [celeb for celeb in celebrities if celeb.get('birthday') == date.strftime('%Y-%m-%d')]
+    except requests.RequestException as e:
+        print(f"Error fetching celebrities by date: {e}")
+        return []

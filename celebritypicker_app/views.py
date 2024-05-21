@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
+from .forms import DateForm
 from django.contrib.auth import login
 from django. contrib.auth.forms import UserCreationForm
-from .tmdb_utils import get_popular_movies, get_celebrity_details
+from .tmdb_utils import get_popular_movies, get_celebrity_details, get_celebrities_by_date
 from django.http import JsonResponse
+from datetime import datetime
+import random
 # Create your views here.
 def home(request):
     popular_movies = get_popular_movies()
@@ -41,3 +44,24 @@ def celebrity_details(request, celeb_id):
        'celeb_details': celeb_details, 
        'profile_img_url': profile_img_url
        })
+
+def celebrity_birthdays(request):
+  if request.method == 'POST':
+    form = DateForm(request.POST)
+    if form.is_valid():
+        selected_date = form.cleaned_data['selected_date']
+        celebrities = get_celebrities_by_date(selected_date)
+        return render(request, 'celebritypicker/celebrity_birthdays.html', {'celebrities': celebrities, 'selected_date': selected_date})
+  else:
+        form = DateForm()
+  return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
+
+def random_movie_or_show(request):
+    celeb_id = request.GET.get('celeb_id')
+    celeb_details = get_celebrity_details(celeb_id)
+    works = celeb_details.get('known_for', [])
+    if works:
+       chosen_work = random.choice(works)
+       return JsonResponse({'title': chosen_work['title'], 'overview': chosen_work['overview']})
+    return JsonResponse({'error': 'No known works found for this celebrity!'})
+   
