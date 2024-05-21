@@ -1,42 +1,45 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
 
-<div>
-    <hi>Celebrities Born on {{ selectecd_date }}</hi>
+<div class="max-w-4xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold text-center mb-4">Find Celebrities by Date</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as.p }}
+        {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Find Celebrities</button>
     </form>
 
     {% if celebrities %}
+        <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date }}</h2>
         {% for celeb in celebrities %}
             <div>
-                <h2>{{ celeb.name }}</h2>
+                <h3 class="text-lg font-bold">{{ celeb.name }}</h3>
                 <p>Movies and Shows:</p>
                 <ul>
                     {% for work in celeb.works %}
-                    <li>{{  work.title  }} ({{ work.year }})</li>
-                    {% endfor %}
+                    <li>{{ work.title }} ({{ work.year }})</li>
+                    {% endfor %}    
                 </ul>
-                <button onclick="fetchRandomWorl({{ celeb.id }})" class="btn btn-primary">Pick a Random Work</button>
-                <div id="random_work_{{ celeb.id }}"></div>
+                <button onclick="fetchRandomWork({{ celeb.id }})" class="btn btn-primary">Choose Random Work</button>
+                <div id="random-work-{{ celeb.id }}"></div>
             </div>
         {% endfor %}
     {% endif %}
 </div>
+
 <script>
     function fetchRandomWork(celebId) {
-        fetch('/random_movies_or_show/?celeb_id=${celebId}')
-        .then(response => response.json())
-        .then(data => {
-            const div = document.getELEMENTById('random-work-${celebId}');
-            if (data.error) {
-                div.innerHTML = `<p>${data.error}</p>`;
-            } else {
-                div.innerHTML = `<p>${data.title} (${data.overview})</p>`;
-            }
-        });
+        fetch(`/random_movie_or_show/?celeb_id=${celebId}`)
+            .then(response => response.json())
+            .then(data => {
+                const div = document.getElementById(`random-work-${celebId}`);
+                if (data.error) {
+                    div.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    div.innerHTML = `<h3>${data.title}</h3><p>${data.overview}</p>`;
+                }
+            });
     }
 </script>
+
 {% endblock %}

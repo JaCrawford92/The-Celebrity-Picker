@@ -5,6 +5,9 @@
     <p class="text-center text-lg text-gray-600 mb-6">
         Discover popular movies featuring your favorite celebrities.
     </p>
+    <div class="text-center">
+        <a href="{% url 'celebrity_birthdays' %}" class="btn btn-primary">Find Celebrities by Date</a>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for movie in popular_movies.results %}
             <div class="p-4 shadow rounded-lg bg-white">
