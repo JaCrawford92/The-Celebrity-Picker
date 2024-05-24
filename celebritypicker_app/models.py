@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class UserActivity(models.Model):
     date = models.DateField()
     movie = models.CharField(max_length=50)
-    show = models.CharField() 
+    show = models.CharField(max_length=50) 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Actor(models.Model):

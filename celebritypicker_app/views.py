@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from .forms import DateForm
 from django.contrib.auth import login
 from django. contrib.auth.forms import UserCreationForm
-from .tmdb_utils import get_popular_movies, get_celebrity_details, get_celebrities_by_date
+from .tmdb_utils import get_popular_celebrities, get_celebrity_details, get_celebrities_by_date
 from django.http import JsonResponse
 from datetime import datetime
 import random
 # Create your views here.
 def home(request):
-    popular_movies = get_popular_movies()
-    return render(request, 'celebritypicker/home.html', {'popular_movies': popular_movies})
+    popular_celebrities = get_popular_celebrities()
+    return render(request, 'celebritypicker/home.html', {'popular_celebrities': popular_celebrities})
 
 def about(request):
     return render(request, 'celebritypicker/about.html')
@@ -46,15 +46,23 @@ def celebrity_details(request, celeb_id):
        })
 
 def celebrity_birthdays(request):
-  if request.method == 'POST':
-    form = DateForm(request.POST)
-    if form.is_valid():
-        selected_date = form.cleaned_data['selected_date']
-        celebrities = get_celebrities_by_date(selected_date)
-        return render(request, 'celebritypicker/celebrity_birthdays.html', {'celebrities': celebrities, 'selected_date': selected_date})
-  else:
-        form = DateForm()
-  return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
+    form = DateForm(request.POST or None)
+    if request.method == 'POST':
+        print("POST request received")
+        if form.is_valid():
+            selected_date = form.cleaned_data['selected_date']
+            print(f"Selected Date: {selected_date}")
+            celebrities = get_celebrities_by_date(selected_date)
+            print(f"Celebrities: {celebrities}")
+            context = {
+                'celebrities': celebrities, 
+                'selected_date': selected_date, 
+                'form': form
+            }
+            print(f"Context: {context}")
+            return render(request, 'celebritypicker/celebrity_birthdays.html', context)
+    return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
+
 
 def random_movie_or_show(request):
     celeb_id = request.GET.get('celeb_id')

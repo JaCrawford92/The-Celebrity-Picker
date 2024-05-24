@@ -9,14 +9,13 @@
         <a href="{% url 'celebrity_birthdays' %}" class="btn btn-primary">Find Celebrities by Date</a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% for movie in popular_movies.results %}
+        {% for celeb in popular_celebrities.results %}
             <div class="p-4 shadow rounded-lg bg-white">
                 <h3 class="text-2xl font-bold mb-2">{{ movie.title }}</h3>
-                <img src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="{{ movie.title }}" class="mb-4">
-                <p>Actor: {{ movie.actor }}</p>
+                <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
                 <p>Release Date: {{ movie.release_date }}</p>
                 <p>{{ movie.overview }}</p>
-                <a href="{% url 'celebrity_details' movie.id %}" class="btn btn-primary">View Details</a>
+                <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>
