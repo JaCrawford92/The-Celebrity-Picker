@@ -3,21 +3,23 @@
 <div class="@container max-w-6xl mx-auto px-4 py-6 dark">
     <h1 class="text-3xl font-bold text-center mb-4">Celebrity Cinema Picker</h1>
     <p class="text-center text-lg text-gray-600 mb-6">
-        Discover popular movies featuring your favorite celebrities.
+        Discover popular celebrities and explore their movies and shows.
     </p>
-    <div class="text-center">
-        <a href="{% url 'celebrity_birthdays' %}" class="btn btn-primary">Find Celebrities by Date</a>
-    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% for celeb in popular_celebrities.results %}
+        {% for celeb in popular_celebrities %}
             <div class="p-4 shadow rounded-lg bg-white">
-                <h3 class="text-2xl font-bold mb-2">{{ movie.title }}</h3>
-                <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
-                <p>Release Date: {{ movie.release_date }}</p>
-                <p>{{ movie.overview }}</p>
+                <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
+                {% if celeb.profile_path %}
+                    <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
+                {% else %}
+                    <p>No image available</p>
+                {% endif %}
+                <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
+                <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
                 <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
+

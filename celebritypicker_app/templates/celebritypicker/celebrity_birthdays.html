@@ -7,13 +7,19 @@
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Find Celebrities</button>
     </form>
-    <pre>
-        {{ celebrities|safe }}
-    </pre>
+
+
     {% if celebrities %}
-        <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date }}</h2>
+        <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date|date:"F d" }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"> 
         {% for celeb in celebrities %}
-            <div class="mb-4">
+            <div class="p-4 shadow rounded-lg bg-white">
+                {% if celeb.profile_img_url %}
+                    <img src="{{ celeb.profile_img_url }}" alt="{{ celeb.name }}" class="w-full h-48 object-cover rounded-md mb-2">
+                {% else %}
+                    <div class="w-full h-48 bg-gray-300 rounded-md mb-2"></div>  
+                {% endif %}
+
                 <h3 class="text-lg font-bold">{{ celeb.name }}</h3>
                 <p>Movies and Shows:</p>
                 <ul>
@@ -25,11 +31,23 @@
                 <div id="random-work-{{ celeb.id }}" class="mt-2"></div>
             </div>
         {% endfor %}
+        </div>
+       
+        <div class="pagination">
+            {% if celebrities.has_previous %}
+                <a href="?page={{ celebrities.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ celebrities.number }} of {{ celebrities.paginator.num_pages }}
+            </span>
+            {% if celebrities.has_next %}
+                <a href="?page={{ celebrities.next_page_number }}">Next</a>
+            {% endif %}
+        </div>    
     {% else %}
         <p>No celebrities found for this date.</p>
     {% endif %}
 </div>
-
 <script>
     function fetchRandomWork(celebId) {
         fetch(`/celebrity/random/?celeb_id=${celebId}`)
@@ -45,4 +63,6 @@
     }
 </script>
 {% endblock %}
+
+
 

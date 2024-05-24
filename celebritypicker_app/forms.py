@@ -1,4 +1,7 @@
 from django import forms
 
 class DateForm(forms.Form):
-    selected_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    selected_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Select a date"
+    )
