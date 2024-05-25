@@ -32,7 +32,7 @@ def get_celebrity_details(celeb_id):
         response = requests.get(url, params=params)
         response.raise_for_status()
         celeb_data = response.json()
-        base_img_url = 'https://image.tmdb.org/t/p/w500'  # You can adjust the size
+        base_img_url = 'https://image.tmdb.org/t/p/w100'  # You can adjust the size
         # Add profile image URL to celeb_data if it exists
         if celeb_data.get('profile_path'):
             celeb_data['profile_img_url'] = f"{base_img_url}{celeb_data['profile_path']}"
@@ -42,9 +42,6 @@ def get_celebrity_details(celeb_id):
     except requests.RequestException as e:
         print(f"Error fetching details for celebrity ID {celeb_id}: {e}")
         return {}
-
-
-# ... (other functions unchanged)
 
 def get_celebrities_by_date(date, page=1, limit=10):
     popular_people_url = 'https://api.themoviedb.org/3/person/popular'

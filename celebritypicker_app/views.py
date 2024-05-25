@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
-from .forms import DateForm
+from .forms import DateForm, UserProfileForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .tmdb_utils import get_popular_celebrities, get_celebrity_details, get_celebrities_by_date
 from django.http import JsonResponse
 from datetime import datetime
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import UserProfile, RandomPick, Movie, Show, Actor, UserActivity
 
 
 def home(request):
@@ -22,8 +24,9 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            UserProfile.objects.create(user=user)  
             login(request, user)
-            return redirect('index')
+            return redirect('/')
         else:
             error_message = 'Invalid sign up - try again'
     else:
@@ -53,8 +56,6 @@ def celebrity_birthdays(request):
             'form': form,
         }
         return render(request, 'celebritypicker/celebrity_birthdays.html', context)
-        print(celebrities)
-        print(len(celebrities))
     else:
         return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
 
@@ -78,5 +79,28 @@ def random_movie_or_show(request):
        chosen_work = random.choice(works)
        return JsonResponse({'title': chosen_work['title'], 'overview': chosen_work['overview']})
     return JsonResponse({'error': 'No known works found for this celebrity!'})
+
+@login_required
+def profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    random_picks = RandomPick.objects.filter(user=request.user)
+    return render(request, 'celebritypicker/profile.html', {'profile': user_profile, 'random_picks': random_picks})
+
+@login_required
+def delete_pick(request, pick_id):
+    RandomPick.objects.filter(id=pick_id, user=request.user).delete()
+    return redirect('profile')
+
+@login_required
+def update_profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=user_profile)
+    return render(request, 'celebritypicker/update_profile.html', {'form': form})
 
    

@@ -99,7 +99,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx tailwindcss -i ./celebritypicker_app/static/css/style.css -o ./celebritypicker_app/static/css/output.css --watch"
+    "build:css": "npx tailwindcss -i ./celebritypicker_app/static/css/tailwind/style.css -o ./celebritypicker_app/static/css/tailwind/output.css --watch"
   },
   "keywords": [],
   "author": "",

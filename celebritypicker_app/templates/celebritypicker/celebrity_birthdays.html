@@ -1,64 +1,72 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-center mb-4">Find Celebrities by Date</h1>
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <h1 class="text-3xl font-bold text-center mb-4">Find Celebrities by Date</h1>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Find Celebrities</button>
     </form>
 
-
     {% if celebrities %}
-        <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date|date:"F d" }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"> 
+    <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date|date:"F d" }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {% for celeb in celebrities %}
-            <div class="p-4 shadow rounded-lg bg-white">
-                {% if celeb.profile_img_url %}
-                    <img src="{{ celeb.profile_img_url }}" alt="{{ celeb.name }}" class="w-full h-48 object-cover rounded-md mb-2">
-                {% else %}
-                    <div class="w-full h-48 bg-gray-300 rounded-md mb-2"></div>  
-                {% endif %}
+        <div class="p-4 shadow rounded-lg bg-white">
+            {% if celeb.profile_img_url %}
+                <img src="{{ celeb.profile_img_url }}" alt="{{ celeb.name }}"
+                     class="w-full h-48 object-cover rounded-md mb-2">
+            {% else %}
+                <div class="w-full h-48 bg-gray-300 rounded-md mb-2"></div>
+            {% endif %}
 
-                <h3 class="text-lg font-bold">{{ celeb.name }}</h3>
-                <p>Movies and Shows:</p>
-                <ul>
-                    {% for work in celeb.works %}
-                        <li>{{ work.title }} ({{ work.release_date }})</li>
-                    {% endfor %}
-                </ul>
-                <button onclick="fetchRandomWork({{ celeb.id }})" class="btn btn-primary">Choose Random Work</button>
-                <div id="random-work-{{ celeb.id }}" class="mt-2"></div>
-            </div>
-        {% endfor %}
+            <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
+            <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
+            <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
+            <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
         </div>
-       
-        <div class="pagination">
-            {% if celebrities.has_previous %}
-                <a href="?page={{ celebrities.previous_page_number }}">Previous</a>
-            {% endif %}
-            <span class="current">
-                Page {{ celebrities.number }} of {{ celebrities.paginator.num_pages }}
-            </span>
-            {% if celebrities.has_next %}
-                <a href="?page={{ celebrities.next_page_number }}">Next</a>
-            {% endif %}
-        </div>    
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if celebrities.has_previous %}
+            <a href="?page={{ celebrities.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ celebrities.number }} of {{ celebrities.paginator.num_pages }}
+        </span>
+        {% if celebrities.has_next %}
+            <a href="?page={{ celebrities.next_page_number }}">Next</a>
+        {% endif %}
+    </div>  
     {% else %}
         <p>No celebrities found for this date.</p>
     {% endif %}
 </div>
 <script>
     function fetchRandomWork(celebId) {
+        const div = document.getElementById(`random-work-${celebId}`);
+        // Clear previous content
+        div.innerHTML = '<p>Loading...</p>'; 
         fetch(`/celebrity/random/?celeb_id=${celebId}`)
-            .then(response => response.json())
-            .then(data => {
-                const div = document.getElementById(`random-work-${celebId}`);
-                if (data.error) {
-                    div.innerHTML = `<p>${data.error}</p>`;
-                } else {
-                    div.innerHTML = `<h3>${data.title}</h3><p>${data.overview}</p>`;
+            .then(response => {
+                if (!response.ok) { // Check if the response is not okay (e.g., 404)
+                    throw new Error(`Network response was not ok (${response.status})`);
                 }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                div.innerHTML = `<p>${data.error}</p>`;
+            } else if (data.title && data.overview) {  // Additional check for fields
+                div.innerHTML = `<h3><span class="math-inline">\{data\.title\}</h3\><p\></span>{data.overview}</p>`;
+            } else {
+                div.innerHTML = '<p>No movie/show information available for this celebrity.</p>';  // Alternative message
+            }
+            })
+            .catch(error => {
+                console.error('Error fetching random work:', error);
+                div.innerHTML = '<p>Error loading data. Please try again later.</p>';
             });
     }
 </script>

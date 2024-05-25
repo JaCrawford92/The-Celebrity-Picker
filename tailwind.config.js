@@ -1,15 +1,11 @@
 module.exports = {
   content: [
-    './templates/**/*.html',
-    './celebritypicker_app/templates/**/*.html',
-    './myapp/**/*.js',
+    '../celebritypicker_app/templates/**/*.html',
   ],
   theme: {
     extend: {},
   },
-  plugins: [
-    require('@tailwindcss/container-queries'),
-  ],
+  plugins: [],
 };
 
 

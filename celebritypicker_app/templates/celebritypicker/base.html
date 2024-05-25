@@ -6,35 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>The Celebrity Picker</title>
-  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tailwind/output.css' %}">
 </head>
-<body>
-  <header class="navbar-fixed">
-    <nav>
-      <div class="nav-wrapper">
-        <ul>
-          <li><a href="/" class="left brand-logo">&nbsp;&nbsp;</a></li>
-        </ul>
-        <ul class="right">
-          <li><a href="{% url 'about' %}">About</a></li>
-          <li><a href="{% url 'celebrity_birthdays' %}">Find Celebrities by Date</a></li>
-          <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <input type="submit" class="btn" value="Log Out"/>
-          </form>
-        </li>
-        <li><a href="{% url 'signup' %}">Sign Up</a></li>
-        <li><a href="{% url 'login' %}">Log In</a></li>
-        </ul>
-      </div>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <header class="bg-blue-600 shadow-lg">
+    <nav class="container mx-auto flex justify-between items-center py-4 px-6">
+      <a href="/" class="text-white text-2xl font-bold">Celebrity Picker</a>
+      <ul class="flex items-center space-x-6">
+        <li><a href="{% url 'about' %}" class="text-white hover:text-gray-300">About</a></li>
+        <li><a href="{% url 'celebrity_birthdays' %}" class="text-white hover:text-gray-300">Find Celebrities by Date</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'profile' %}" class="text-white hover:text-gray-300">Profile</a></li>
+          <li>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="text-white hover:text-gray-300">Log Out</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'signup' %}" class="text-white hover:text-gray-300">Sign Up</a></li>
+          <li><a href="{% url 'login' %}" class="text-white hover:text-gray-300">Log In</a></li>
+        {% endif %}
+      </ul>
     </nav>
   </header>
-  <main class="container">
+  <main class="container mx-auto px-4 py-6">
     {% block content %}
     {% endblock %}
   </main>
-  <footer class="page-footer">
-     All Rights Reserved, &copy; {% now "Y" %}
+  <footer class="bg-blue-600 text-white text-center py-4">
+    All Rights Reserved, &copy; {% now "Y" %}
   </footer>
 </body>
 </html>
+
+

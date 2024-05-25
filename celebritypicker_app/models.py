@@ -3,6 +3,14 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 # Create your models here.
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+    favorites = models.ManyToManyField('Movie', blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
 
 class UserActivity(models.Model):
     date = models.DateField()
@@ -34,3 +42,8 @@ class Show(models.Model):
 
     def __str__(self):
         return self.title
+    
+class RandomPick(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
