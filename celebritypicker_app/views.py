@@ -73,17 +73,25 @@ def celebrity_birthdays(request):
     else:
         return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
 
+
 def celebrity_details(request, celeb_id):
     celeb_details = get_celebrity_details(celeb_id)
+    known_for = celeb_details.get('known_for', [])
+    print(f"Known for: {known_for}")
+    print(f"Details: {celeb_details}")
+
     if celeb_details.get('profile_path'):
         base_img_url = 'https://image.tmdb.org/t/p/w500'
         profile_image_url = f"{base_img_url}{celeb_details.get('profile_path')}"
     else:
         profile_image_url = None
+
     return render(request, 'celebritypicker/celebrity_details.html', {
-       'celeb_details': celeb_details, 
+       'celeb_details': celeb_details,
+       'known_for': known_for,
        'profile_image_url': profile_image_url
     })
+
 
 def random_movie_or_show(request):
     celeb_id = request.GET.get('celeb_id')
