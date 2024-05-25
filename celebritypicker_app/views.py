@@ -12,8 +12,22 @@ from .models import UserProfile, RandomPick, Movie, Show, Actor, UserActivity
 
 
 def home(request):
-    popular_celebrities = get_popular_celebrities()
-    return render(request, 'celebritypicker/home.html', {'popular_celebrities': popular_celebrities})
+    page = request.GET.get('page', 1)  # Get the current page from the query parameter
+    celebrities, total_pages = get_popular_celebrities(page=page)  # Get celebrities and total pages
+
+    paginator = Paginator(celebrities, 10)  # Show 10 celebrities per page
+    try:
+        celebrities = paginator.page(page)
+    except PageNotAnInteger:
+        celebrities = paginator.page(1)
+    except EmptyPage:
+        celebrities = paginator.page(paginator.num_pages)
+
+    return render(request, 'celebritypicker/home.html', {
+        'popular_celebrities': celebrities,
+        'total_pages': total_pages,
+        'current_page': int(page)
+    })
 
 def about(request):
     return render(request, 'celebritypicker/about.html')

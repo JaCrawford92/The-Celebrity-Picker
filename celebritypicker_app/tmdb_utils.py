@@ -2,16 +2,18 @@ import requests
 from django.conf import settings
 from datetime import datetime
 
-def get_popular_celebrities():
+def get_popular_celebrities(page=1):
     url = 'https://api.themoviedb.org/3/person/popular'
     person_details_url = 'https://api.themoviedb.org/3/person/{}?language=en-US'
     params = {
-        'api_key': settings.TMDB_API_KEY
+        'api_key': settings.TMDB_API_KEY,
+        'page': page  # Add pagination parameter
     }
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
         celebrities = response.json().get('results', [])
+        total_pages = response.json().get('total_pages', 1)  # Get the total number of pages
         
         detailed_celebrities = []
         for celeb in celebrities:
@@ -20,10 +22,10 @@ def get_popular_celebrities():
             celeb_details = person_response.json()
             detailed_celebrities.append(celeb_details)
         
-        return detailed_celebrities
+        return detailed_celebrities, total_pages
     except requests.RequestException as e:
         print(f"Error fetching popular celebrities: {e}")
-        return []
+        return [], 1 
 
 def get_celebrity_details(celeb_id):
     url = f'https://api.themoviedb.org/3/person/{celeb_id}'
@@ -73,3 +75,4 @@ def get_celebrities_by_date(date, page=1, limit=10):
     except requests.RequestException as e:
         print(f"Error fetching celebrities by date: {e}")
         return []
+

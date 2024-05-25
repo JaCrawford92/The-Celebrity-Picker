@@ -8,18 +8,37 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for celeb in popular_celebrities %}
             <div class="py-8 px-8 max-w-sm mx-auto bg-white rounded-xl shadow-lg space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
-                <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
-                {% if celeb.profile_path %}
-                    <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
-                {% else %}
-                    <p>No image available</p>
-                {% endif %}
-                <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
-                <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
-                <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
+                <div class="text-center sm:text-left">
+                    <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
+                    {% if celeb.profile_path %}
+                        <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
+                    <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
+                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
+                </div>
             </div>
         {% endfor %}
     </div>
+    <div class="pagination flex justify-center mt-4">
+        <div class="inline-flex">
+            {% if current_page > 1 %}
+                <a href="?page={{ current_page|add:-1 }}" class="px-3 py-2 mx-1 bg-blue-500 text-white rounded hover:bg-blue-700">Previous</a>
+            {% endif %}
+
+            <span class="px-3 py-2 mx-1 bg-gray-200 rounded">
+                Page {{ current_page }} of {{ total_pages }}
+            </span>
+
+            {% if current_page < total_pages %}
+                <a href="?page={{ current_page|add:1 }}" class="px-3 py-2 mx-1 bg-blue-500 text-white rounded hover:bg-blue-700">Next</a>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}
+
+
 
