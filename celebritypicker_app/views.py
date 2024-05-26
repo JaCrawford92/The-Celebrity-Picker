@@ -10,18 +10,14 @@ import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import UserProfile, RandomPick, Movie, Show, Actor, UserActivity
 
-
 def home(request):
     page = request.GET.get('page', 1)  # Get the current page from the query parameter
-    celebrities, total_pages = get_popular_celebrities(page=page)  # Get celebrities and total pages
-
-    paginator = Paginator(celebrities, 10)  # Show 10 celebrities per page
     try:
-        celebrities = paginator.page(page)
-    except PageNotAnInteger:
-        celebrities = paginator.page(1)
-    except EmptyPage:
-        celebrities = paginator.page(paginator.num_pages)
+        page = int(page)
+    except ValueError:
+        page = 1
+
+    celebrities, total_pages = get_popular_celebrities(page=page)  # Get celebrities and total pages
 
     return render(request, 'celebritypicker/home.html', {
         'popular_celebrities': celebrities,
@@ -48,31 +44,41 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+def clear_filter(request):
+    if 'selected_date' in request.session:
+        del request.session['selected_date']
+    return redirect('celebrity_birthdays')
+
 def celebrity_birthdays(request):
     form = DateForm(request.POST or None)
     page = request.GET.get('page', 1)
+    selected_date = None
+    celebrities = []
+    total_pages = 1
 
     if request.method == 'POST' and form.is_valid():
         selected_date = form.cleaned_data['selected_date']
-        celebrities = get_celebrities_by_date(selected_date, page=page)
+        request.session['selected_date'] = selected_date  # Store the selected date (MM-DD) in session
 
-        paginator = Paginator(celebrities, 10)  # Show 10 celebrities per page
-        try:
-            celebrities = paginator.page(page)
-        except PageNotAnInteger:
-            celebrities = paginator.page(1)
-        except EmptyPage:
-            celebrities = paginator.page(paginator.num_pages)
+    if 'selected_date' in request.session:
+        selected_date = request.session['selected_date']
 
-        context = {
-            'celebrities': celebrities,
-            'selected_date': selected_date,
-            'form': form,
-        }
-        return render(request, 'celebritypicker/celebrity_birthdays.html', context)
+    if selected_date:
+        if isinstance(selected_date, str):
+            date_str = selected_date
+        else:
+            date_str = selected_date.strftime('%m-%d')
+        celebrities, total_pages = get_celebrities_by_date(date_str, page=page)
     else:
-        return render(request, 'celebritypicker/celebrity_birthdays.html', {'form': form})
+        celebrities, total_pages = get_popular_celebrities(page=page)
 
+    return render(request, 'celebritypicker/celebrity_birthdays.html', {
+        'form': form,
+        'celebrities': celebrities,
+        'selected_date': selected_date,
+        'total_pages': total_pages,
+        'current_page': int(page)
+    })
 
 def celebrity_details(request, celeb_id):
     celeb_details = get_celebrity_details(celeb_id)
@@ -91,7 +97,6 @@ def celebrity_details(request, celeb_id):
        'known_for': known_for,
        'profile_image_url': profile_image_url
     })
-
 
 def random_movie_or_show(request):
     celeb_id = request.GET.get('celeb_id')
@@ -124,5 +129,6 @@ def update_profile(request):
     else:
         form = UserProfileForm(instance=user_profile)
     return render(request, 'celebritypicker/update_profile.html', {'form': form})
+
 
    

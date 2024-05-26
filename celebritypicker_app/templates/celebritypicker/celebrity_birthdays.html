@@ -1,49 +1,53 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-6">
-    <h1 class="text-3xl font-bold text-center mb-4">Find Celebrities by Date</h1>
-
-    <form method="post">
+    <h1>Celebrity Birthdays</h1>
+    <form method="post" class="mb-6">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Find Celebrities</button>
+        <button type="submit" class="btn btn-primary">Filter by Date</button>
+        {% if selected_date %}
+            <a href="{% url 'clear_filter' %}" class="btn btn-secondary ml-2">Clear Filter</a>
+        {% endif %}
     </form>
-
-    {% if celebrities %}
-    <h2 class="text-xl font-semibold mt-6">Celebrities Born on {{ selected_date|date:"F d" }}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for celeb in celebrities %}
-        <div class="p-4 shadow rounded-lg bg-white">
-            {% if celeb.profile_path %}
-                <img src="https://image.tmdb.org/t/p/w200{{ celeb.profile_path }}" alt="{{ celeb.name }}"
-                     class="w-full h-48 object-cover rounded-md mb-2">
-            {% else %}
-                <div class="w-full h-48 bg-gray-300 rounded-md mb-2"></div>
-            {% endif %}
-
-            <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
-            <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
-            <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
-            <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
-        </div>
+            <div class="py-8 px-8 max-w-sm mx-auto bg-white rounded-xl shadow-lg space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
+                <div class="text-center sm:text-left">
+                    <h3 class="text-2xl font-bold mb-2">{{ celeb.name }}</h3>
+                    {% if celeb.profile_path %}
+                        <img src="https://image.tmdb.org/t/p/w300{{ celeb.profile_path }}" alt="{{ celeb.name }}" class="mb-4">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
+                    <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
+                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
         {% endfor %}
     </div>
-    <div class="pagination mt-4">
-        {% if celebrities.has_previous %}
-            <a href="?page={{ celebrities.previous_page_number }}" class="btn btn-secondary">Previous</a>
-        {% endif %}
-        <span class="current">
-            Page {{ celebrities.number }} of {{ celebrities.paginator.num_pages }}
-        </span>
-        {% if celebrities.has_next %}
-            <a href="?page={{ celebrities.next_page_number }}" class="btn btn-secondary">Next</a>
-        {% endif %}
-    </div>  
-    {% else %}
-        <p class="text-center text-lg text-gray-600 mt-6">No celebrities found for this date.</p>
+    {% if total_pages > 1 %}
+        <div class="pagination flex justify-center mt-4">
+            <div class="inline-flex">
+                {% if current_page > 1 %}
+                    <a href="?page={{ current_page|add:-1 }}" class="px-3 py-2 mx-1 bg-blue-500 text-white rounded hover:bg-blue-700">Previous</a>
+                {% endif %}
+
+                <span class="px-3 py-2 mx-1 bg-gray-200 rounded">
+                    Page {{ current_page }} of {{ total_pages }}
+                </span>
+
+                {% if current_page < total_pages %}
+                    <a href="?page={{ current_page|add:1 }}" class="px-3 py-2 mx-1 bg-blue-500 text-white rounded hover:bg-blue-700">Next</a>
+                {% endif %}
+            </div>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
+
+
 
 
 

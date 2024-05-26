@@ -7,13 +7,12 @@ def get_popular_celebrities(page=1):
     person_details_url = 'https://api.themoviedb.org/3/person/{}?language=en-US'
     params = {
         'api_key': settings.TMDB_API_KEY,
-        'page': page  # Add pagination parameter
+        'page': page
     }
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
         celebrities = response.json().get('results', [])
-        total_pages = response.json().get('total_pages', 1)  # Get the total number of pages
         
         detailed_celebrities = []
         for celeb in celebrities:
@@ -22,10 +21,11 @@ def get_popular_celebrities(page=1):
             celeb_details = person_response.json()
             detailed_celebrities.append(celeb_details)
         
+        total_pages = response.json().get('total_pages', 1)
         return detailed_celebrities, total_pages
     except requests.RequestException as e:
         print(f"Error fetching popular celebrities: {e}")
-        return [], 1 
+        return [], 1
 
 def get_celebrity_details(celeb_id):
     url = f'https://api.themoviedb.org/3/person/{celeb_id}'
@@ -50,34 +50,33 @@ def get_celebrity_details(celeb_id):
         return {}
 
 
-def get_celebrities_by_date(date, page=1, limit=10):
-    popular_people_url = 'https://api.themoviedb.org/3/person/popular'
+def get_celebrities_by_date(date, page=1):
+    url = 'https://api.themoviedb.org/3/person/popular'
     params = {
         'api_key': settings.TMDB_API_KEY,
         'page': page
     }
+
     try:
-        response = requests.get(popular_people_url, params=params)
+        response = requests.get(url, params=params)
         response.raise_for_status()
-        celebrities = response.json().get('results', [])
+        data = response.json()
+        celebrities = data.get('results', [])
+
         filtered_celebrities = []
-        print(celebrities)
         for celeb in celebrities:
-            if 'birthday' in celeb:
-                # Convert the birthday to a datetime object
-                birthday = datetime.strptime(celeb['birthday'], '%Y-%m-%d')
-                # Extract month and day from the birthday and selected date
-                birthday_month_day = birthday.strftime('%m-%d')
-                selected_month_day = date.strftime('%m-%d')
-                # Check if the month and day match
-                if birthday_month_day == selected_month_day:
-                    celeb_details = get_celebrity_details(celeb['id'])
-                    celeb_details['works'] = celeb_details.get('known_for', [])
-                    filtered_celebrities.append(celeb_details)
-                    if len(filtered_celebrities) >= limit:
-                        break
-        return filtered_celebrities
+            person_response = requests.get(f'https://api.themoviedb.org/3/person/{celeb["id"]}', params={'api_key': settings.TMDB_API_KEY})
+            person_response.raise_for_status()
+            person_details = person_response.json()
+            if 'birthday' in person_details and person_details['birthday']:
+                celeb_month_day = '-'.join(person_details['birthday'].split('-')[1:])  # Get the MM-DD part of the birthday
+                if celeb_month_day == date:
+                    filtered_celebrities.append(person_details)
+
+        total_pages = data.get('total_pages', 1)
+        return filtered_celebrities, total_pages
     except requests.RequestException as e:
         print(f"Error fetching celebrities by date: {e}")
-        return []
+        return [], 1
+
 
