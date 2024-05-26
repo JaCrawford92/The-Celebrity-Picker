@@ -28,8 +28,52 @@
                 </div>
             {% endfor %}
         </div>
+        <div class="mt-4">
+            <button id="random-pick-btn" class="btn btn-primary">Random Pick</button>
+            <p id="random-pick-result" class="mt-4"></p>
+        </div>
     {% else %}
         <p>No details available for this celebrity.</p>
     {% endif %}
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const randomPickBtn = document.getElementById('random-pick-btn');
+        if (randomPickBtn) {
+            randomPickBtn.addEventListener('click', function() {
+                fetch("{% url 'random_movie_or_show' %}?celeb_id={{ celeb_details.id }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('random-pick-result').innerText = data.error;
+                    } else {
+                        document.getElementById('random-pick-result').innerText = `Selected: ${data.title}`;
+                        // Automatically save to profile
+                        fetch("{% url 'save_random_pick' %}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({ title: data.title, overview: data.overview })
+                        }).then(saveResponse => saveResponse.json())
+                          .then(saveData => {
+                              if (saveData.status === 'success') {
+                                  console.log('Saved successfully');
+                              } else {
+                                  console.log('Save failed:', saveData.error);
+                              }
+                          }).catch(error => console.log('Save error:', error));
+                    }
+                }).catch(error => {
+                    console.log('Error:', error);
+                    document.getElementById('random-pick-result').innerText = 'An error occurred while fetching the random pick.';
+                });
+            });
+        } else {
+            console.error('Random pick button not found');
+        }
+    });
+</script>
 {% endblock %}
+

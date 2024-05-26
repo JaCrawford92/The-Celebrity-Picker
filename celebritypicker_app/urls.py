@@ -13,4 +13,5 @@ urlpatterns = [
     path('profile/update', views.update_profile, name='update_profile'),
     path('delete_pick/<int:pick_id>/', views.delete_pick, name='delete_pick'),
     path('clear_filter/', views.clear_filter, name='clear_filter'),
+    path('save_random_pick/', views.save_random_pick, name='save_random_pick'),
 ]

@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from .forms import DateForm, UserProfileForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import UserCreationForm
 from .tmdb_utils import get_popular_celebrities, get_celebrity_details, get_celebrities_by_date
 from django.http import JsonResponse
-from datetime import datetime
 import random
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import UserProfile, RandomPick, Movie, Show, Actor, UserActivity
+import json
+from .models import UserProfile, RandomPick
 
 def home(request):
     page = request.GET.get('page', 1)  # Get the current page from the query parameter
@@ -103,8 +103,16 @@ def random_movie_or_show(request):
     celeb_details = get_celebrity_details(celeb_id)
     works = celeb_details.get('known_for', [])
     if works:
-       chosen_work = random.choice(works)
-       return JsonResponse({'title': chosen_work['title'], 'overview': chosen_work['overview']})
+        chosen_work = random.choice(works)
+        # Log the structure of chosen_work
+        print(json.dumps(chosen_work, indent=4))
+        # Safely access the keys
+        title = chosen_work.get('title') or chosen_work.get('name')
+        if title:
+            overview = chosen_work.get('overview', 'No overview available')
+            return JsonResponse({'title': title, 'overview': overview})
+        else:
+            return JsonResponse({'error': 'No title or name found for the selected work!'})
     return JsonResponse({'error': 'No known works found for this celebrity!'})
 
 @login_required
@@ -129,6 +137,22 @@ def update_profile(request):
     else:
         form = UserProfileForm(instance=user_profile)
     return render(request, 'celebritypicker/update_profile.html', {'form': form})
+
+@csrf_exempt
+@login_required
+def save_random_pick(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        title = data.get('title')
+        overview = data.get('overview')
+        
+        if title and overview:
+            RandomPick.objects.create(user=request.user, title=title, overview=overview)
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 
    
