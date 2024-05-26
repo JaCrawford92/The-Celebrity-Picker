@@ -110,7 +110,8 @@ def random_movie_or_show(request):
         title = chosen_work.get('title') or chosen_work.get('name')
         if title:
             overview = chosen_work.get('overview', 'No overview available')
-            return JsonResponse({'title': title, 'overview': overview})
+            poster_path = chosen_work.get('poster_path')
+            return JsonResponse({'title': title, 'overview': overview, 'poster_path': poster_path})
         else:
             return JsonResponse({'error': 'No title or name found for the selected work!'})
     return JsonResponse({'error': 'No known works found for this celebrity!'})
@@ -145,9 +146,10 @@ def save_random_pick(request):
         data = json.loads(request.body)
         title = data.get('title')
         overview = data.get('overview')
+        poster_path = data.get('poster_path')
         
         if title and overview:
-            RandomPick.objects.create(user=request.user, title=title, overview=overview)
+            RandomPick.objects.create(user=request.user, title=title, overview=overview, poster_path=poster_path)
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'error': 'Invalid data'}, status=400)
