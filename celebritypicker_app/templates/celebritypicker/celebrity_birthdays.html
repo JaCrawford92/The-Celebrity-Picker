@@ -1,13 +1,13 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-6">
-    <h1>Celebrity Birthdays</h1>
+    <h1 class="text-white">Celebrity Birthdays</h1>
     <form method="post" class="mb-6">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Filter by Date</button>
+        <button type="submit" class="btn btn-primary text-white">Filter by Date</button>
         {% if selected_date %}
-            <a href="{% url 'clear_filter' %}" class="btn btn-secondary ml-2">Clear Filter</a>
+            <a href="{% url 'clear_filter' %}" class="btn btn-secondary text-white ml-2">Clear Filter</a>
         {% endif %}
     </form>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

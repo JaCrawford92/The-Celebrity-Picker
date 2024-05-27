@@ -12,7 +12,11 @@
     <h2 class="text-xl font-semibold mt-6">Random Picks History</h2>
     <ul>
         {% for pick in random_picks %}
-        <li>{{ pick.movie.title }} - {{ pick.created_at }}</li>
+        <li>{{ pick.title }} - {{ pick.created_at }}</li>
+        {{ pick.overview }}
+        {% if pick.poster_path %}
+            <img src="https://image.tmdb.org/t/p/w200{{ pick.poster_path }}" alt="{{ pick.title }}">
+        {% endif %}
         {% endfor %}
     </ul>
 </div>

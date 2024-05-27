@@ -49,12 +49,10 @@
                     } else {
                         const knownForContainer = document.getElementById('known-for-container');
                         if (knownForContainer) {
-                            // Clear existing content
                             knownForContainer.innerHTML = '';
                         } else {
                             console.error('Element with ID known-for-container not found.');
                         }
-                        // Display the random pick
                         const pickHTML = `
                             <div class="p-4 shadow rounded-lg bg-white">
                                 <h3 class="font-semibold">${data.title}</h3>
@@ -63,7 +61,6 @@
                             </div>
                         `;
                         document.getElementById('random-pick-result').innerHTML = pickHTML;
-                        // Automatically save to profile
                         fetch("{% url 'save_random_pick' %}", {
                             method: 'POST',
                             headers: {
