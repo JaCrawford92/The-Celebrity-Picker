@@ -6,9 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>The Celebrity Picker</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+    }
+  </style>
   <link rel="stylesheet" href="{% static 'css/tailwind/output.css' %}">
 </head>
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <div class="lg:content-auto">
+
   <header class="bg-blue-600 shadow-lg">
     <nav class="container mx-auto flex justify-between items-center py-4 px-6">
       <a href="/" class="text-white text-2xl font-bold">Celebrity Picker</a>
@@ -30,6 +51,8 @@
       </ul>
     </nav>
   </header>
+  <div class="lg:content-auto">
+
   <main class="container mx-auto px-4 py-6">
     {% block content %}
     {% endblock %}
