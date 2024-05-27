@@ -155,6 +155,14 @@ def save_random_pick(request):
             return JsonResponse({'error': 'Invalid data'}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@login_required
+def delete_pick(request, pick_id):
+    try:
+        random_pick = RandomPick.objects.get(id=pick_id, user=request.user)
+        random_pick.delete()
+        return JsonResponse({'status': 'success'})
+    except RandomPick.DoesNotExist:
+        return JsonResponse({'error': 'Random pick not found'}, status=404)
 
 
    
