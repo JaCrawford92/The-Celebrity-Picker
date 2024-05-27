@@ -40,7 +40,7 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['celebritypicker-76f731b01eb8.herokuapp.com']
 
 
 # Application definition
