@@ -2,8 +2,8 @@
 {% block content %}
 <div class="max-w-4xl mx-auto px-4 py-6 lead">
     {% if celeb_details %}
-        <h1 class="text-2xl font-bold mb-4">{{ celeb_details.name }}</h1>
-        <div class="flex flex-col md:flex-row md:gap-4">
+        <h1 class="text-2xl font-bold mb-4 text-white">{{ celeb_details.name }}</h1>
+        <div class="flex flex-col md:flex-row md:gap-4 text-white">
             {% if profile_image_url %}
                 <img src="{{ profile_image_url }}" alt="{{ celeb_details.name }}" class="mb-4 md:mb-0">
             {% else %}
@@ -15,7 +15,11 @@
                 <p><strong>Biography:</strong> {{ celeb_details.biography }}</p>
             </div>
         </div>
-        <h2 class="text-xl font-semibold mt-6">Known For</h2>
+        <h2 class="text-xl text-white font-semibold mt-6">Known For</h2>
+        <div class="mt-4">
+            <button id="random-pick-btn" class="btn btn-primary text-white">Random Pick</button>
+            <div id="random-pick-result" class="mt-4"></div>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4" id="known-for-container">
             {% for work in known_for %}
                 <div class="p-4 shadow rounded-lg bg-white known-for-item">
@@ -27,10 +31,6 @@
                     {% endif %}
                 </div>
             {% endfor %}
-        </div>
-        <div class="mt-4">
-            <button id="random-pick-btn" class="btn btn-primary">Random Pick</button>
-            <div id="random-pick-result" class="mt-4"></div>
         </div>
     {% else %}
         <p>No details available for this celebrity.</p>

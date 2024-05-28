@@ -1,7 +1,7 @@
 {% extends 'celebritypicker/base.html' %}
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-6 dark">
-    <h1>Celebrity Cinema Picker</h1>
+    <h1 class="text-center text-white text-bold"><strong>Celebrity Cinema Picker</strong></h1>
     <p class="text-center text-lg text-gray-600 mb-6">
         Discover popular celebrities and explore their movies and shows.
     </p>
@@ -17,7 +17,7 @@
                     {% endif %}
                     <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
                     <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
-                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary">View Details</a>
+                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary dark:ring-offset-slate">View Details</a>
                 </div>
             </div>
         {% endfor %}

@@ -58,7 +58,8 @@ def celebrity_birthdays(request):
 
     if request.method == 'POST' and form.is_valid():
         selected_date = form.cleaned_data['selected_date']
-        request.session['selected_date'] = selected_date  # Store the selected date (MM-DD) in session
+        request.session['selected_date'] = selected_date
+        page = 1  # Store the selected date (MM-DD) in session
 
     if 'selected_date' in request.session:
         selected_date = request.session['selected_date']

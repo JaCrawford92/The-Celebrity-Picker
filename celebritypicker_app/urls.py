@@ -16,7 +16,4 @@ urlpatterns = [
     path('delete_pick/<int:pick_id>/', views.delete_pick, name='delete_pick'),
     path('clear_filter/', views.clear_filter, name='clear_filter'),
     path('save_random_pick/', views.save_random_pick, name='save_random_pick'),
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
