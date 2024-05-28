@@ -17,7 +17,7 @@
         </div>
         <h2 class="text-xl text-white font-semibold mt-6">Known For</h2>
         <div class="mt-4">
-            <button id="random-pick-btn" class="btn btn-primary text-white">Random Pick</button>
+            <button id="random-pick-btn" class="btn btn-primary text-white py-2 px-5 bg-blue-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75">Random Pick</button>
             <div id="random-pick-result" class="mt-4"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4" id="known-for-container">
@@ -37,6 +37,7 @@
     {% endif %}
 </div>
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
         const randomPickBtn = document.getElementById('random-pick-btn');
         if (randomPickBtn) {

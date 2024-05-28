@@ -116,21 +116,46 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'celebritypicker_app' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+if IS_HEROKU_APP:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+            'OPTIONS': {
+                'bucket_name': os.environ.get('AWS_STORAGE_BUCKET_NAME'),
+            }
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+else:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+            'OPTIONS': {
+                'location': os.path.join(BASE_DIR, 'media'),
+            }
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {
-            "location": MEDIA_ROOT,
-            "base_url": MEDIA_URL,
-        },
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#         "OPTIONS": {
+#             "location": MEDIA_ROOT,
+#             "base_url": MEDIA_URL,
+#         },
+#     },
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 

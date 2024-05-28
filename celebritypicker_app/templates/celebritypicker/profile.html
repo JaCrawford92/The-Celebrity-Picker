@@ -17,11 +17,42 @@
         {% if pick.poster_path %}
             <img src="https://image.tmdb.org/t/p/w200{{ pick.poster_path }}" alt="{{ pick.title }}">
         {% endif %}
-        <button class="btn btn-danger mt-4" onclick="deletePick({{ pick.id }})">Delete</button>
+        <button class="btn btn-primary mt-4" onclick="toggleFavorite({{ pick.id }}, {{ pick.is_favorite }})">
+            {% if pick.is_favorite %}
+                Unmark as Favorite
+            {% else %}
+                Mark as Favorite
+            {% endif %}
+        </button>
+        {% if not pick.is_favorite %}
+            <button class="btn btn-danger mt-4" onclick="deletePick({{ pick.id }})">Delete</button>
+        {% endif %}
         {% endfor %}
     </ul>
 </div>
 <script>
+    function toggleFavorite(pickId, isFavorite) {
+        const url = isFavorite ? "{% url 'unmark_favorite' %}" : "{% url 'mark_favorite' %}";
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ pick_id: pickId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
     function deletePick(pickId) {
         if (confirm('Are you sure you want to delete this pick?')) {
             fetch("{% url 'delete_pick' 0 %}".replace('0', pickId), {

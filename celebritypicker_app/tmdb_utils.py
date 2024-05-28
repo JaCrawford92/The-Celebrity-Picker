@@ -80,3 +80,19 @@ def get_celebrities_by_date(date, page=1):
         return [], 1
 
 
+# def tmdb_favorite_action(media_type, media_id, favorite=True):
+#     url = f"https://api.themoviedb.org/3/account/{settings.TMDB_ACCOUNT_ID}/favorite"
+#     headers = {
+#         "accept": "application/json",
+#         "content-type": "application/json",
+#         "Authorization": f"Bearer {settings.TMDB_ACCESS_TOKEN}"
+#     }
+#     data = {
+#         "media_type": media_type,
+#         "media_id": media_id,
+#         "favorite": favorite
+#     }
+#     response = requests.post(url, headers=headers, json=data)
+#     return response.json()
+
+

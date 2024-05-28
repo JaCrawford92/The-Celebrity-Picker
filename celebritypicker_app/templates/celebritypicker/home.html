@@ -17,7 +17,7 @@
                     {% endif %}
                     <p><strong>Birthday:</strong> {{ celeb.birthday }}</p>
                     <p><strong>Biography:</strong> {{ celeb.biography|truncatewords:30 }}</p>
-                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary dark:ring-offset-slate">View Details</a>
+                    <a href="{% url 'celebrity_details' celeb.id %}" class="btn btn-primary *:rounded-full *:border *:border-sky-100 *:bg-sky-50 *:px-2 *:py-0.5 dark:text-sky-300 dark:*:border-sky-500/15 dark:*:bg-sky-500/10 ">View Details</a>
                 </div>
             </div>
         {% endfor %}

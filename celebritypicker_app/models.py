@@ -8,6 +8,7 @@ class UserProfile(models.Model):
     photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     favorites = models.ManyToManyField('Movie', blank=True)
 
+
     def __str__(self):
         return f"{self.user.username}'s profile"
 
@@ -48,6 +49,7 @@ class RandomPick(models.Model):
     title = models.CharField(max_length=255)
     overview = models.TextField()
     poster_path = models.CharField(max_length=255, null=True, blank=True)
+    is_favorite = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

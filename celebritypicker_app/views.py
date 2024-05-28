@@ -8,7 +8,7 @@ from .tmdb_utils import get_popular_celebrities, get_celebrity_details, get_cele
 from django.http import JsonResponse
 import random
 import json
-from .models import UserProfile, RandomPick
+from .models import UserProfile, RandomPick, Movie, Show
 
 def home(request):
     page = request.GET.get('page', 1)  # Get the current page from the query parameter
@@ -156,14 +156,89 @@ def save_random_pick(request):
             return JsonResponse({'error': 'Invalid data'}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@csrf_exempt
+@login_required
+def mark_favorite(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        pick_id = data.get('pick_id')
+        try:
+            random_pick = RandomPick.objects.get(id=pick_id, user=request.user)
+            random_pick.is_favorite = True
+            random_pick.save()
+            return JsonResponse({'status': 'success'})
+        except RandomPick.DoesNotExist:
+            return JsonResponse({'error': 'Random pick not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+@login_required
+def unmark_favorite(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        pick_id = data.get('pick_id')
+        try:
+            random_pick = RandomPick.objects.get(id=pick_id, user=request.user)
+            random_pick.is_favorite = False
+            random_pick.save()
+            return JsonResponse({'status': 'success'})
+        except RandomPick.DoesNotExist:
+            return JsonResponse({'error': 'Random pick not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 @login_required
 def delete_pick(request, pick_id):
     try:
         random_pick = RandomPick.objects.get(id=pick_id, user=request.user)
-        random_pick.delete()
-        return JsonResponse({'status': 'success'})
+        if not random_pick.is_favorite:
+            random_pick.delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'error': 'Cannot delete favorite pick'}, status=400)
     except RandomPick.DoesNotExist:
         return JsonResponse({'error': 'Random pick not found'}, status=404)
+
+    
+# @csrf_exempt
+# @login_required
+# def add_favorite_movie(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         movie_id = data.get('movie_id')
+#         try:
+#             movie = Movie.objects.get(id=movie_id)
+#             profile = UserProfile.objects.get(user=request.user)
+#             profile.favorites_movies.add(movie)
+#             return JsonResponse({'status': 'success'})
+#         except Movie.DoesNotExist:
+#             return JsonResponse({'error': 'Movie not found'}, status=404)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @csrf_exempt
+# @login_required
+# def add_favorite(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         media_type = data.get('media_type')
+#         media_id = data.get('media_id')
+#         if media_type and media_id:
+#             response = tmdb_favorite_action(media_type, media_id, favorite=True)
+#             return JsonResponse(response)
+#         return JsonResponse({'error': 'Invalid data'}, status=400)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @csrf_exempt
+# @login_required
+# def remove_favorite(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         media_type = data.get('media_type')
+#         media_id = data.get('media_id')
+#         if media_type and media_id:
+#             response = tmdb_favorite_action(media_type, media_id, favorite=False)
+#             return JsonResponse(response)
+#         return JsonResponse({'error': 'Invalid data'}, status=400)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
    
