@@ -54,7 +54,7 @@ def get_celebrities_by_date(date, page=1):
     url = 'https://api.themoviedb.org/3/person/popular'
     params = {
         'api_key': settings.TMDB_API_KEY,
-        'page': 1
+        'page': page
     }
 
     try:
@@ -73,8 +73,8 @@ def get_celebrities_by_date(date, page=1):
                 if celeb_month_day == date:
                     filtered_celebrities.append(person_details)
 
-        # total_pages = data.get('total_pages', 1)
-        return filtered_celebrities
+        total_pages = data.get('total_pages', 1)
+        return filtered_celebrities, total_pages
     except requests.RequestException as e:
         print(f"Error fetching celebrities by date: {e}")
         return [], 1
