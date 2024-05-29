@@ -6,7 +6,7 @@
     {% if profile.photo %}
         <img src="{{ profile.photo.url }}" alt="Profile Photo" class="max-w-40 max-h-40 rounded-full mb-4 items-center justify-items-center">
     {% else %}
-        <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Photo" class="w-24 h-24 rounded-full mb-4">
+        <img src="{{ static 'images/default-profile.png' }}" alt="Default Profile Photo" class="w-24 h-24 rounded-full mb-4">
     {% endif %}
     <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
     <h2 class="text-xl font-semibold mt-6">Random Picks History</h2>
