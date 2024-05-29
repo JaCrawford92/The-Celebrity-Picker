@@ -123,11 +123,6 @@ def profile(request):
     random_picks = RandomPick.objects.filter(user=request.user)
     return render(request, 'celebritypicker/profile.html', {'profile': user_profile, 'random_picks': random_picks})
 
-# @login_required
-# def delete_pick(request, pick_id):
-#     RandomPick.objects.filter(id=pick_id, user=request.user).delete()
-#     return redirect('profile')
-
 @login_required
 def update_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
@@ -198,47 +193,6 @@ def delete_pick(request, pick_id):
     except RandomPick.DoesNotExist:
         return JsonResponse({'error': 'Random pick not found'}, status=404)
 
-    
-# @csrf_exempt
-# @login_required
-# def add_favorite_movie(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         movie_id = data.get('movie_id')
-#         try:
-#             movie = Movie.objects.get(id=movie_id)
-#             profile = UserProfile.objects.get(user=request.user)
-#             profile.favorites_movies.add(movie)
-#             return JsonResponse({'status': 'success'})
-#         except Movie.DoesNotExist:
-#             return JsonResponse({'error': 'Movie not found'}, status=404)
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-# @csrf_exempt
-# @login_required
-# def add_favorite(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         media_type = data.get('media_type')
-#         media_id = data.get('media_id')
-#         if media_type and media_id:
-#             response = tmdb_favorite_action(media_type, media_id, favorite=True)
-#             return JsonResponse(response)
-#         return JsonResponse({'error': 'Invalid data'}, status=400)
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-# @csrf_exempt
-# @login_required
-# def remove_favorite(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         media_type = data.get('media_type')
-#         media_id = data.get('media_id')
-#         if media_type and media_id:
-#             response = tmdb_favorite_action(media_type, media_id, favorite=False)
-#             return JsonResponse(response)
-#         return JsonResponse({'error': 'Invalid data'}, status=400)
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
    
