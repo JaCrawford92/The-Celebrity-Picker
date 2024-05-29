@@ -5,26 +5,19 @@ import dj_database_url
 
 load_dotenv()
 
-# Base directory of your project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret Key and API Key
 SECRET_KEY = os.environ.get('SECRET_KEY')
 TMDB_API_KEY = os.environ.get('TMDB_API_KEY')
-AWS_ACCESS_KEY_ID= os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY= os.environ.get('AWS_SECRET_ACCESS_KEY')
-S3_Bucket = os.environ.get('S3_Bucket')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
-# Debug and Allowed Hosts
-if IS_HEROKU_APP:
-    DEBUG = False
-    ALLOWED_HOSTS = ["*"]
-else:
-    DEBUG = True
-    ALLOWED_HOSTS = []
+DEBUG = not IS_HEROKU_APP
+ALLOWED_HOSTS = ["*"] if IS_HEROKU_APP else []
 
-# Application definition
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'celebritypicker_app',
@@ -35,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',  # Ensure django-storages is installed
 ]
 
 MIDDLEWARE = [
@@ -68,7 +62,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'celebritypicker_project.wsgi.application'
 
-# Database configuration
 if IS_HEROKU_APP:
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
@@ -87,7 +80,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -103,64 +95,38 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Login and Logout Redirect URLs
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static and Media Files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'celebritypicker_app' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 if IS_HEROKU_APP:
-    STORAGES = {
-        'default': {
-            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
-            'OPTIONS': {
-                'bucket_name': os.environ.get('AWS_STORAGE_BUCKET_NAME'),
-            }
-        },
-        'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-        },
-    }
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 else:
-    STORAGES = {
-        'default': {
-            'BACKEND': 'django.core.files.storage.FileSystemStorage',
-            'OPTIONS': {
-                'location': os.path.join(BASE_DIR, 'media'),
-            }
-        },
-        'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-        },
-    }
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "django.core.files.storage.FileSystemStorage",
-#         "OPTIONS": {
-#             "location": MEDIA_ROOT,
-#             "base_url": MEDIA_URL,
-#         },
-#     },
-#     "staticfiles": {
-#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-#     },
-# }
+STORAGES = {
+    'default': {
+        'BACKEND': DEFAULT_FILE_STORAGE if IS_HEROKU_APP else 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
