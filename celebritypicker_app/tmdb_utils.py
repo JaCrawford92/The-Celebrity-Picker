@@ -35,14 +35,12 @@ def get_celebrity_details(celeb_id):
         response = requests.get(url, params=params)
         response.raise_for_status()
         celeb_data = response.json()
-        print(f"Celebrity data {celeb_data}")
 
         # Fetch combined credits
         combined_credits_response = requests.get(combined_credits_url, params=params)
         combined_credits_response.raise_for_status()
         combined_credits_data = combined_credits_response.json()
         celeb_data['known_for'] = combined_credits_data.get('cast', [])
-        print(f"Combined credits data {combined_credits_data}")
 
         return celeb_data
     except requests.RequestException as e:
@@ -78,21 +76,5 @@ def get_celebrities_by_date(date, page=1):
     except requests.RequestException as e:
         print(f"Error fetching celebrities by date: {e}")
         return [], 1
-
-
-# def tmdb_favorite_action(media_type, media_id, favorite=True):
-#     url = f"https://api.themoviedb.org/3/account/{settings.TMDB_ACCOUNT_ID}/favorite"
-#     headers = {
-#         "accept": "application/json",
-#         "content-type": "application/json",
-#         "Authorization": f"Bearer {settings.TMDB_ACCESS_TOKEN}"
-#     }
-#     data = {
-#         "media_type": media_type,
-#         "media_id": media_id,
-#         "favorite": favorite
-#     }
-#     response = requests.post(url, headers=headers, json=data)
-#     return response.json()
 
 

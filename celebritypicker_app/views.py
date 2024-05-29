@@ -84,8 +84,6 @@ def celebrity_birthdays(request):
 def celebrity_details(request, celeb_id):
     celeb_details = get_celebrity_details(celeb_id)
     known_for = celeb_details.get('known_for', [])
-    print(f"Known for: {known_for}")
-    print(f"Details: {celeb_details}")
 
     if celeb_details.get('profile_path'):
         base_img_url = 'https://image.tmdb.org/t/p/w500'
@@ -106,7 +104,6 @@ def random_movie_or_show(request):
     if works:
         chosen_work = random.choice(works)
         # Log the structure of chosen_work
-        print(json.dumps(chosen_work, indent=4))
         # Safely access the keys
         title = chosen_work.get('title') or chosen_work.get('name')
         if title:

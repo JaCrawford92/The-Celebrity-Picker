@@ -29,6 +29,7 @@ https://celebritypicker-76f731b01eb8.herokuapp.com/
 - GitHub
 - postgresql
 - Postman
+- AWS
 
 ## Next Steps
 - adding more filtering
@@ -42,5 +43,3 @@ https://celebritypicker-76f731b01eb8.herokuapp.com/
 - https://tailwindcss.com/
 - https://www.youtube.com/watch?v=76n7sqZocSk (Integrate Tailwind into your Django  application)
 - Chat GPT (error handling)
-- 
--
