@@ -123,10 +123,10 @@ def profile(request):
     random_picks = RandomPick.objects.filter(user=request.user)
     return render(request, 'celebritypicker/profile.html', {'profile': user_profile, 'random_picks': random_picks})
 
-@login_required
-def delete_pick(request, pick_id):
-    RandomPick.objects.filter(id=pick_id, user=request.user).delete()
-    return redirect('profile')
+# @login_required
+# def delete_pick(request, pick_id):
+#     RandomPick.objects.filter(id=pick_id, user=request.user).delete()
+#     return redirect('profile')
 
 @login_required
 def update_profile(request):

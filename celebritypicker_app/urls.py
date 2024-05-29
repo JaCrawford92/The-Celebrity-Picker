@@ -18,6 +18,4 @@ urlpatterns = [
     path('save_random_pick/', views.save_random_pick, name='save_random_pick'),
     path('mark_favorite/', views.mark_favorite, name='mark_favorite'),
     path('unmark_favorite/', views.unmark_favorite, name='unmark_favorite'),
-    # path('add_favorite/', views.add_favorite, name='add_favorite'),
-    # path('remove_favorite/', views.remove_favorite, name='remove_favorite'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

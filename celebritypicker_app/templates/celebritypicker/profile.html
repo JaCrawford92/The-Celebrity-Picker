@@ -17,7 +17,7 @@
         {% if pick.poster_path %}
             <img src="https://image.tmdb.org/t/p/w200{{ pick.poster_path }}" alt="{{ pick.title }}">
         {% endif %}
-        <button class="btn btn-primary mt-4" onclick="toggleFavorite({{ pick.id }}, {{ pick.is_favorite }})">
+        <button class="btn btn-primary mt-4" onclick="toggleFavorite({{ pick.id }}, {{ pick.is_favorite|yesno:'true,false' }})">
             {% if pick.is_favorite %}
                 Unmark as Favorite
             {% else %}
